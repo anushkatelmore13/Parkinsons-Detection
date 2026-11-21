@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: #101110;
+    color: #F3F2EC;
+    font-family: 'Space Grotesk', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1B1D19;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2A2D26;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C6FF4A;
+  }
+  ::selection {
+    background: #C6FF4A30;
+    color: #C6FF4A;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: 'Syne', 'Space Grotesk', sans-serif;
+  }
+  
+  .border-glass {
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  
+  .bg-glass {
+    background: rgba(27, 29, 25, 0.8);
+    backdrop-filter: blur(16px);
+  }
+
+  .glow-lime {
+    box-shadow: 0 0 20px rgba(198, 255, 74, 0.15);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(155, 123, 255, 0.15);
+  }
+
+  .text-gradient-lime {
+    background: linear-gradient(135deg, #C6FF4A, #9B7BFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Spiral animation */
+@keyframes spiral-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spiral-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.spiral-layer-1 { animation: spiral-rotate 25s linear infinite; }
+.spiral-layer-2 { animation: spiral-reverse 18s linear infinite; }
+.spiral-layer-3 { animation: spiral-rotate 12s linear infinite; }
+
+/* Scanning line effect */
+@keyframes scanline {
+  0% { top: -2px; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scan-line {
+  animation: scanline 2.5s linear infinite;
+}
+
+/* Noise texture overlay */
+.noise::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Grid pattern */
+.grid-pattern {
+  background-image: 
+    linear-gradient(rgba(198, 255, 74, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 255, 74, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Blinking cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink 1.2s step-end infinite;
+}
