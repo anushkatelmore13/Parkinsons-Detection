@@ -1,18 +1,18 @@
 import os
 from pathlib import Path
-from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, UploadFile, File, Query, HTTPException, BackgroundTasks
+from fastapi.responses import JSONResponse, FileResponse, Response
 from datetime import datetime, timezone
 
 from database import insert_prediction, get_all_predictions, get_prediction_by_id, delete_prediction, get_analytics
 from model_service import predict_image, get_model_status
 from services.pdf_report import generate_prediction_pdf
-from fastapi.responses import Response
 
 router = APIRouter()
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+PLOTS_DIR = Path("model/plots")
 
 ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp", "image/bmp", "image/tiff"}
 MAX_SIZE_BYTES = 10 * 1024 * 1024  # 10 MB
@@ -24,14 +24,18 @@ async def health():
     return {
         "status": "ok",
         "model_loaded": status["loaded"],
-        "model_path_exists": status["exists"],
+        "available_models": status.get("available_models", []),
+        "primary_model": status.get("primary_model", "none"),
         "architecture": status["architecture"],
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
 
 @router.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(
+    file: UploadFile = File(...),
+    model: str = Query("yolo11", description="Model architecture: yolo11, resnet50, vgg16, custom_cnn, or compare")
+):
     if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
             status_code=422,
@@ -50,7 +54,7 @@ async def predict(file: UploadFile = File(...)):
         f.write(contents)
 
     try:
-        prediction = predict_image(contents, file.filename)
+        prediction = predict_image(contents, file.filename, model_name=model)
     except RuntimeError as e:
         raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
@@ -78,6 +82,30 @@ async def predict(file: UploadFile = File(...)):
         "timestamp": ts,
         "image_url": f"/api/image/{safe_name}",
     }
+
+
+@router.get("/plots/{plot_name}")
+async def get_plot(plot_name: str):
+    # Sanitize plot name
+    allowed_plots = {
+        "model_metrics_comparison.png",
+        "roc_curves_comparison.png",
+        "confusion_matrices_all.png",
+        "training_curves_comparison.png"
+    }
+    if plot_name not in allowed_plots:
+        raise HTTPException(status_code=404, detail="Plot not found")
+    
+    plot_file = PLOTS_DIR / plot_name
+    if not plot_file.exists():
+        raise HTTPException(status_code=404, detail="Plot image does not exist yet. Please wait for model training to complete.")
+    
+    return FileResponse(str(plot_file), media_type="image/png")
+
+
+@router.get("/models")
+async def list_models():
+    return get_model_status()
 
 
 @router.get("/history")
@@ -151,6 +179,6 @@ async def dataset_info():
         "total_images": total,
         "classes": classes,
         "format": "JPEG / PNG",
-        "image_size": "640x640 (resized at inference)",
+        "image_size": "224x224 (PyTorch) / 640x640 (YOLO11)",
         "source": "Roboflow — Parkinson Disease Detection v1 (folder format)",
     }

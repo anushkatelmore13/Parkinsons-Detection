@@ -112,16 +112,16 @@ export default function OverviewPage() {
         <div className="flex-1">
           {modelStatus?.model_loaded ? (
             <span className="text-sm text-lime font-medium">
-              YOLOv8n-cls model loaded and ready · Inference active
+              Multi-Model Suite loaded (Ultralytics YOLO11, ResNet50, VGG16, Custom CNN) · Live inference active
             </span>
           ) : (
             <span className="text-sm text-yellow-400 font-medium">
-              Model weights not found — Place <code className="bg-black/30 px-1 rounded">best.pt</code> in <code className="bg-black/30 px-1 rounded">backend/model/</code> and restart
+              Training models — Check <code className="bg-black/30 px-1 rounded">backend/model/</code> for checkpoints
             </span>
           )}
         </div>
         <span className={`text-xs px-2 py-1 rounded font-mono ${modelStatus?.model_loaded ? 'bg-lime/10 text-lime' : 'bg-yellow-500/10 text-yellow-400'}`}>
-          YOLOv8n-cls
+          YOLO11 Suite
         </span>
       </motion.div>
 
@@ -278,13 +278,13 @@ export default function OverviewPage() {
         <p className="text-xs text-muted tracking-widest mb-5">MODEL ARCHITECTURE SUMMARY</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: 'Model', value: 'YOLOv8n-cls' },
-            { label: 'Task', value: 'Binary Classif.' },
-            { label: 'Input Size', value: '640 × 640' },
-            { label: 'Epochs', value: '50' },
-            { label: 'Batch Size', value: '16' },
-            { label: 'Val Accuracy', value: '93.75%' },
-            { label: 'F1 Score', value: '94.12%' },
+            { label: 'Champion Model', value: 'YOLO11n-cls' },
+            { label: 'Suite Models', value: '4 Architectures' },
+            { label: 'Input Sizes', value: '224 / 640 px' },
+            { label: 'Comparison', value: 'YOLO11 vs ResNet/VGG/CNN' },
+            { label: 'Frameworks', value: 'Ultralytics + PyTorch' },
+            { label: 'Test Accuracy', value: '85.0% (Champion)' },
+            { label: 'Test F1 Score', value: '82.35% (Champion)' },
             { label: 'Classes', value: 'healthy / parkinson' },
           ].map((item) => (
             <div key={item.label}>

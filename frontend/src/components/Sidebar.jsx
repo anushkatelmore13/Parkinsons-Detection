@@ -98,7 +98,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
               exit={{ opacity: 0 }}
               className="text-xs text-muted"
             >
-              v1.0.0 · YOLOv8n-cls
+              v2.0.0 · YOLO11 Suite
             </motion.p>
           )}
         </AnimatePresence>

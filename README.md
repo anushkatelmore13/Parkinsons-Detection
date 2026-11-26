@@ -1,6 +1,6 @@
 # TRACEFORM — Visual Intelligence Lab
 
-> **Parkinson's spiral drawing classification** using YOLOv8n-cls · FastAPI backend · React + Vite frontend
+> **Parkinson's spiral drawing classification** using Ultralytics YOLO11n-cls, ResNet50, VGG16 & Custom 4-Block CNN · FastAPI backend · React + Vite frontend
 
 ---
 
@@ -10,7 +10,7 @@
 |-------|-----------|
 | Frontend | React 18, Vite, Tailwind CSS, Framer Motion, Recharts |
 | Backend | FastAPI, Uvicorn, Python 3.10+ |
-| ML | Ultralytics YOLOv8n-cls, PyTorch, Pillow |
+| ML | Ultralytics YOLO11n-cls, PyTorch, torchvision, scikit-learn, Pillow |
 | Database | SQLite (via Python `sqlite3`) |
 
 ---
@@ -49,20 +49,26 @@ npm run dev
 
 ## Model Setup
 
-The backend expects your trained YOLOv8n-cls weights at:
+Trained model weights are stored in `backend/model/`:
 
 ```
-backend/model/best.pt
+backend/model/
+├── yolo11n-cls.pt     # Champion model (Ultralytics YOLO11n-cls)
+├── best.pt            # Alias to champion weights
+├── resnet50.pt        # ResNet50 transfer learning weights
+├── vgg16.pt           # VGG16 transfer learning weights
+├── custom_cnn.pt      # Custom 4-Block CNN weights
+├── metrics.json       # Held-out test set evaluation metrics
+├── model_config.json  # Multi-model registry & config
+└── plots/             # Comparison bar chart, ROC curves, confusion matrices, loss curves
 ```
 
-**How to get `best.pt`:**
+To retrain and re-evaluate all 4 architectures:
 
-1. Run the Colab notebook (`Parkinson.ipynb`)
-2. After training completes, download: `runs/classify/train/weights/best.pt`
-3. Place it in `backend/model/best.pt`
-4. Restart the backend
-
-If the weights are missing, the API will return a `503` on `/api/predict` and the dashboard will show a warning banner.
+```bash
+cd backend
+python3 ml/train_eval.py
+```
 
 ---
 
@@ -71,7 +77,9 @@ If the weights are missing, the API will return a `503` on `/api/predict` and th
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/health` | Model status and system health |
-| `POST` | `/api/predict` | Upload image, run YOLOv8 inference |
+| `POST` | `/api/predict?model=...` | Upload image, run inference (`yolo11`, `resnet50`, `vgg16`, `custom_cnn`, `compare`) |
+| `GET` | `/api/models` | Multi-model status & comparison metrics |
+| `GET` | `/api/plots/{plot_name}` | Serve generated evaluation plots |
 | `GET` | `/api/history` | List prediction history |
 | `GET` | `/api/history/{id}` | Single prediction detail |
 | `DELETE` | `/api/history/{id}` | Delete a prediction record |
@@ -93,15 +101,14 @@ If the weights are missing, the API will return a `503` on `/api/predict` and th
 
 ---
 
-## Model Performance (YOLOv8n-cls, test set n=32)
+## Model Performance (Held-out Test Set, n=40)
 
-| Metric | Value |
-|--------|-------|
-| Accuracy | 93.75% |
-| Precision | 94.12% |
-| Recall | 94.12% |
-| F1 Score | 94.12% |
-| TP / TN / FP / FN | 16 / 14 / 1 / 1 |
+| Model | Accuracy | Precision | Recall | Specificity | F1 Score | ROC-AUC | Latency |
+|-------|----------|-----------|--------|-------------|----------|---------|---------|
+| **YOLO11n-cls (Best)** | **85.0%** | **82.35%** | **82.35%** | **86.96%** | **82.35%** | **0.8951** | **7.6 ms** |
+| VGG16 (Transfer) | 82.5% | 81.25% | 76.47% | 86.96% | 78.79% | 0.8491 | 24.77 ms |
+| ResNet50 (Transfer) | 80.0% | 73.68% | 82.35% | 78.26% | 77.78% | 0.8824 | 19.14 ms |
+| Custom 4-Block CNN | 57.5% | 50.00% | 52.94% | 60.87% | 51.43% | 0.6138 | 5.75 ms |
 
 ---
 
@@ -112,9 +119,10 @@ traceform/
 ├── backend/
 │   ├── main.py              # FastAPI app entrypoint
 │   ├── database.py          # SQLite helpers
-│   ├── model_service.py     # YOLOv8 load & inference
+│   ├── model_service.py     # Multi-model load & inference (YOLO11/ResNet50/VGG16/CNN)
+│   ├── ml/                  # Training & evaluation pipeline (dataset, models, train_eval.py)
 │   ├── routes/api.py        # All API routes
-│   ├── model/best.pt        # ← place weights here
+│   ├── model/               # Trained weights, metrics.json & plots/
 │   ├── uploads/             # Uploaded images (auto-created)
 │   ├── requirements.txt
 │   └── .env.example

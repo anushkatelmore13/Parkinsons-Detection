@@ -95,20 +95,20 @@ export default function NotesPage() {
 
       <Section title="Preprocessing Pipeline" tag="03 — PREPROCESSING">
         <div className="space-y-3 text-sm text-muted">
-          <p>YOLOv8 handles preprocessing internally during training and inference:</p>
+          <p>YOLO11 handles preprocessing internally, while PyTorch models use deterministic evaluation resizing:</p>
           <div className="p-5 bg-surface border border-border font-mono text-xs space-y-2">
             {[
               '1. Load image (PIL → RGB)',
-              '2. Resize to 640×640 (letterbox padding)',
-              '3. Normalize pixel values to [0, 1]',
+              '2. Resize to 640×640 (YOLO11) or 224×224 (ResNet50, VGG16, Custom CNN)',
+              '3. Normalize pixel values (ImageNet mean/std or [0.5, 0.5, 0.5])',
               '4. Convert to PyTorch tensor (C, H, W)',
-              '5. Batch inference through YOLOv8n-cls backbone',
+              '5. Batch inference through chosen vision backbone',
               '6. Softmax output → class probabilities',
             ].map(s => <p key={s} className="text-white">{s}</p>)}
           </div>
           <p>
-            The original Colab notebook used <Code>imgsz=640</Code>, <Code>epochs=50</Code>, <Code>batch=16</Code>.
-            Augmentations (flips, rotations, HSV jitter) are applied automatically by Ultralytics during training.
+            Augmentations (random flips, rotations, color jitter) are strictly isolated to the training set.
+            Validation and held-out test splits remain deterministic and unaugmented.
           </p>
         </div>
       </Section>
@@ -116,17 +116,15 @@ export default function NotesPage() {
       <Section title="Model Architecture" tag="04 — ARCHITECTURE">
         <div className="space-y-4 text-sm text-muted">
           <p>
-            <strong className="text-white">YOLOv8n-cls</strong> is the nano variant of the YOLOv8 classification
-            architecture by Ultralytics. Key properties:
+            <strong className="text-white">YOLO11n-cls</strong> is the latest nano classification variant
+            by Ultralytics, benchmarked alongside <strong className="text-white">ResNet50</strong>, <strong className="text-white">VGG16</strong>, and a <strong className="text-white">Custom 4-Block CNN</strong>:
           </p>
           <ul className="list-none space-y-2 pl-0">
             {[
-              'CSPDarknet backbone for multi-scale feature extraction',
-              'C2f modules (Cross-Stage Partial with two bottleneck convolutions)',
-              'SPPF (Spatial Pyramid Pooling — Fast) for multi-scale context',
-              'Global Average Pooling → Linear → Softmax classification head',
-              'Pre-trained on ImageNet; fine-tuned on spiral drawing dataset',
-              '~2.7M parameters (nano variant) — fast inference on CPU/GPU',
+              'YOLO11n-cls: C3k2 cross-stage partial blocks + SPPF (~1.53M params, 3.2 GFLOPs)',
+              'ResNet50: 50-layer residual network with staged unfreezing and cosine LR',
+              'VGG16: 16-layer deep CNN with dropout regularization and adaptive pooling',
+              'Custom CNN: 4-block Conv2D + BatchNorm + ReLU trained from scratch',
             ].map(item => (
               <li key={item} className="flex gap-3">
                 <span className="text-lime mt-0.5 shrink-0">→</span>
@@ -165,8 +163,8 @@ export default function NotesPage() {
                 detail: 'Provides guidance for transparent reporting of clinical AI prediction models. Emphasizes external validation and uncertainty quantification.',
               },
               {
-                title: 'Ultraltyics YOLOv8 Classification Docs',
-                detail: 'Official documentation for YOLOv8n-cls training, fine-tuning, validation and export. Available at: docs.ultralytics.com',
+                title: 'Ultralytics YOLO11 Classification Docs',
+                detail: 'Official documentation for YOLO11n-cls training, fine-tuning, validation and export. Available at: docs.ultralytics.com',
               },
             ].map(r => (
               <div key={r.title} className="p-4 border border-border bg-surface">

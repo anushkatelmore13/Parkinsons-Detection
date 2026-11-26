@@ -207,7 +207,7 @@ export default function LandingPage() {
               transition={{ delay: 0.1 }}
               className="text-muted text-lg leading-relaxed mb-6"
             >
-              TRACEFORM is an experimental AI research platform built around YOLOv8 image classification.
+              TRACEFORM is an experimental AI research platform built around a 4-model vision suite (Ultralytics YOLO11, ResNet50, VGG16, Custom CNN).
               It analyzes spiral drawing images to study how neural networks distinguish visual patterns
               associated with Parkinson's disease versus healthy motor control.
             </motion.p>
@@ -228,9 +228,9 @@ export default function LandingPage() {
           </div>
           <div className="space-y-6">
             {[
-              { label: 'Architecture', value: 'YOLOv8n-cls', desc: 'Nano classification model fine-tuned on spiral drawings' },
-              { label: 'Dataset', value: '60 images', desc: 'Train / Test split · healthy & parkinson classes · Roboflow' },
-              { label: 'Val Accuracy', value: '93.75%', desc: 'TP=16, FP=1, TN=14, FN=1 on test set' },
+              { label: 'Architecture', value: 'YOLO11n-cls + 3 CNNs', desc: 'Ultralytics YOLO11, ResNet50, VGG16 & Custom 4-Block CNN' },
+              { label: 'Dataset', value: '204 images', desc: 'Train / Valid / Test splits · healthy & parkinson · Roboflow' },
+              { label: 'Champion Acc', value: '85.0% (Test)', desc: 'Evaluated on held-out test set (n=40) across 4 models' },
               { label: 'Task', value: 'Binary Classification', desc: 'Healthy vs Parkinson spiral drawing analysis' },
             ].map((item, i) => (
               <motion.div
@@ -270,14 +270,14 @@ export default function LandingPage() {
             {[
               {
                 title: 'Image Studio',
-                desc: 'Upload spiral drawings. Run real YOLOv8 inference. See actual classification results with confidence scores.',
+                desc: 'Upload spiral drawings. Run live YOLO11, ResNet50, VGG16, or Custom CNN inference. Compare 4-way consensus.',
                 tag: 'LIVE INFERENCE',
                 path: '/workspace/studio',
                 accent: 'lime'
               },
               {
                 title: 'Model Lab',
-                desc: 'Inspect the YOLOv8n-cls architecture, training metrics, confusion matrix and performance curves.',
+                desc: 'Inspect the 4-model benchmark matrix, ROC curves, confusion matrices and training dynamics.',
                 tag: 'MODEL ANALYSIS',
                 path: '/workspace/model',
                 accent: 'purple'
@@ -342,7 +342,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="font-display font-bold text-lg tracking-widest text-lime">TRACEFORM</span>
           <p className="text-xs text-muted text-center">
-            Experimental research platform · Not a medical device · YOLOv8n-cls · Parkinson Spiral Classification
+            Experimental research platform · Not a medical device · YOLO11 · ResNet50 · VGG16 · Custom CNN
           </p>
           <p className="text-xs text-muted">v1.0.0</p>
         </div>

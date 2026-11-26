@@ -44,8 +44,8 @@ export default function SettingsPage() {
           </div>
           <div className="p-5 space-y-4">
             {[
-              { label: 'Model Path', value: 'backend/model/best.pt' },
-              { label: 'Architecture', value: 'YOLOv8n-cls' },
+              { label: 'Model Path', value: 'backend/model/yolo11n-cls.pt' },
+              { label: 'Architecture', value: 'YOLO11n-cls + ResNet50 + VGG16 + Custom CNN' },
               { label: 'Input Size', value: '640 × 640' },
               { label: 'Classes', value: 'healthy, parkinson' },
               { label: 'Max Upload Size', value: '10 MB' },

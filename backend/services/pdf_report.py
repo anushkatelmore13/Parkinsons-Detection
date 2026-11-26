@@ -114,7 +114,7 @@ def generate_prediction_pdf(record: dict) -> bytes:
         ],
         [
             Paragraph("<b>MODEL USED:</b>", body_style),
-            Paragraph(str(record.get('model_used', 'YOLOv8n-cls')), body_style),
+            Paragraph(str(record.get('model_used', 'Ultralytics YOLO11n-cls')), body_style),
             Paragraph("<b>INFERENCE TIME:</b>", body_style),
             Paragraph(f"{record.get('inference_time_ms', 0):.2f} ms", body_style)
         ],
@@ -178,13 +178,14 @@ def generate_prediction_pdf(record: dict) -> bytes:
 
     # 4. Model Architecture & Validation Context
     story.append(Paragraph("TRAINING & VALIDATION SPECIFICATIONS", heading_style))
+    model_name = str(record.get('model_used', 'Ultralytics YOLO11n-cls'))
     model_data = [
-        [Paragraph("<b>Architecture</b>", body_style), Paragraph("YOLOv8n-cls (Ultralytics Nano Classifier)", body_style)],
-        [Paragraph("<b>Input Resolution</b>", body_style), Paragraph("640 × 640 pixels (RGB, Normalized)", body_style)],
-        [Paragraph("<b>Training Epochs</b>", body_style), Paragraph("50 epochs (batch_size=16, AdamW optimizer)", body_style)],
-        [Paragraph("<b>Validation Metrics (Test Set)</b>", body_style), Paragraph("Accuracy: 93.75% | Precision: 94.12% | Recall: 94.12% | F1: 94.12%", body_style)],
-        [Paragraph("<b>Test Set Confusion Matrix</b>", body_style), Paragraph("TP: 16 (Parkinson) | TN: 14 (Healthy) | FP: 1 | FN: 1 (Total: 32)", body_style)],
-        [Paragraph("<b>Dataset Provenance</b>", body_style), Paragraph("Roboflow Parkinson Disease Detection v1 (204 total images)", body_style)]
+        [Paragraph("<b>Architecture</b>", body_style), Paragraph(model_name, body_style)],
+        [Paragraph("<b>Model Family</b>", body_style), Paragraph("Multi-Model Vision Suite (YOLO11 / ResNet50 / VGG16 / Custom CNN)", body_style)],
+        [Paragraph("<b>Input Resolution</b>", body_style), Paragraph("224 × 224 (PyTorch Backbones) / 640 × 640 (YOLO11)", body_style)],
+        [Paragraph("<b>Optimization</b>", body_style), Paragraph("AdamW / SGD with fine-tuned staged unfreezing & cosine LR", body_style)],
+        [Paragraph("<b>Validation Metrics (Held-out Test)</b>", body_style), Paragraph("Multi-architecture benchmarked on held-out test split (n=40)", body_style)],
+        [Paragraph("<b>Dataset Provenance</b>", body_style), Paragraph("Roboflow Parkinson Disease Detection v1 (204 total spiral drawings)", body_style)]
     ]
     model_table = Table(model_data, colWidths=[160, 370])
     model_table.setStyle(TableStyle([
