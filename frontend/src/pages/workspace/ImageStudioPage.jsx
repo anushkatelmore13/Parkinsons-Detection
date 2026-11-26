@@ -201,7 +201,11 @@ export default function ImageStudioPage() {
       setResult(data)
       toast.success('Inference completed across chosen model(s).')
     } catch (err) {
-      const msg = err.response?.data?.detail || 'Inference failed. Check backend.'
+      const msg =
+        err.response?.data?.detail ||
+        (err.response?.status === 404 || !err.response
+          ? 'Backend API unreachable. Start the FastAPI server locally (port 8000) or configure VITE_API_URL.'
+          : 'Inference failed. Check backend.')
       setError(msg)
       toast.error(msg)
     } finally {

@@ -291,12 +291,17 @@ export default function ModelLabPage() {
               </div>
               <div className="bg-bg border border-border/60 p-2 flex items-center justify-center min-h-[300px]">
                 <img
-                  src="/api/plots/model_metrics_comparison.png"
+                  src={`${import.meta.env.VITE_API_URL || ''}/api/plots/model_metrics_comparison.png`}
                   alt="Model Performance Comparison"
                   className="max-h-[360px] w-auto object-contain mx-auto"
                   onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
+                    if (!e.target.dataset.fallback) {
+                      e.target.dataset.fallback = '1';
+                      e.target.src = `${import.meta.env.BASE_URL}plots/model_metrics_comparison.png`;
+                    } else {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }
                   }}
                 />
                 <div style={{ display: 'none' }} className="p-8 text-center text-xs text-muted">
@@ -317,12 +322,17 @@ export default function ModelLabPage() {
               </div>
               <div className="bg-bg border border-border/60 p-2 flex items-center justify-center min-h-[300px]">
                 <img
-                  src="/api/plots/roc_curves_comparison.png"
+                  src={`${import.meta.env.VITE_API_URL || ''}/api/plots/roc_curves_comparison.png`}
                   alt="ROC Curves Comparison"
                   className="max-h-[360px] w-auto object-contain mx-auto"
                   onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
+                    if (!e.target.dataset.fallback) {
+                      e.target.dataset.fallback = '1';
+                      e.target.src = `${import.meta.env.BASE_URL}plots/roc_curves_comparison.png`;
+                    } else {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }
                   }}
                 />
                 <div style={{ display: 'none' }} className="p-8 text-center text-xs text-muted">
@@ -343,12 +353,17 @@ export default function ModelLabPage() {
               </div>
               <div className="bg-bg border border-border/60 p-2 flex items-center justify-center min-h-[300px]">
                 <img
-                  src="/api/plots/confusion_matrices_all.png"
+                  src={`${import.meta.env.VITE_API_URL || ''}/api/plots/confusion_matrices_all.png`}
                   alt="Confusion Matrices"
                   className="max-h-[360px] w-auto object-contain mx-auto"
                   onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
+                    if (!e.target.dataset.fallback) {
+                      e.target.dataset.fallback = '1';
+                      e.target.src = `${import.meta.env.BASE_URL}plots/confusion_matrices_all.png`;
+                    } else {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }
                   }}
                 />
                 <div style={{ display: 'none' }} className="p-8 text-center text-xs text-muted">
@@ -369,12 +384,17 @@ export default function ModelLabPage() {
               </div>
               <div className="bg-bg border border-border/60 p-2 flex items-center justify-center min-h-[300px]">
                 <img
-                  src="/api/plots/training_curves_comparison.png"
+                  src={`${import.meta.env.VITE_API_URL || ''}/api/plots/training_curves_comparison.png`}
                   alt="Training Curves"
                   className="max-h-[360px] w-auto object-contain mx-auto"
                   onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
+                    if (!e.target.dataset.fallback) {
+                      e.target.dataset.fallback = '1';
+                      e.target.src = `${import.meta.env.BASE_URL}plots/training_curves_comparison.png`;
+                    } else {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }
                   }}
                 />
                 <div style={{ display: 'none' }} className="p-8 text-center text-xs text-muted">
