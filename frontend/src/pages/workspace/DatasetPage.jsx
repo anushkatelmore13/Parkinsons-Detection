@@ -216,7 +216,7 @@ export default function DatasetPage() {
           {sampleFiles.map((fname, i) => (
             <ImageCard
               key={fname}
-              src={`/api/dataset-image/${activeSplit}/${activeClass}/${fname}`}
+              src={`${import.meta.env.VITE_API_URL || ''}/api/dataset-image/${activeSplit}/${activeClass}/${fname}`}
               label={activeClass}
               filename={fname}
             />
